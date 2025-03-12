@@ -51,9 +51,9 @@ def generate_measurement_data(
         4     1.238495       7.123456
     """
     rs = np.random.RandomState(random_seed)
-    voltages = rs.uniform(num_samples) * (voltage_max - voltage_min) + voltage_min
+    voltages = rs.uniform(size=num_samples) * (voltage_max - voltage_min) + voltage_min
     currents = (voltages + offset_voltage) / resistance + rs.standard_normal(
-        num_samples
+        size=num_samples
     ) / resistance * noise_factor
     return pd.DataFrame({
         "voltage [V]": voltages,

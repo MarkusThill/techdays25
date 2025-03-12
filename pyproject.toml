@@ -44,7 +44,8 @@ dev = [
 
 lab1 = [
     "pandas",
-    "numpy"
+    "numpy",
+    "matplotlib"
 ]
 
 [build-system]
