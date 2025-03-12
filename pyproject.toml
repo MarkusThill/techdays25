@@ -1,0 +1,124 @@
+# https://packaging.python.org/en/latest/tutorials/packaging-projects/#creating-pyproject-toml
+[project]
+name = "techdays25"
+version = "0.0.0"
+description = "Accompanying Repository for the Tech Days 2025"
+authors = [
+    { name = "Markus Thill" }
+]
+maintainers = [
+    { name = "Markus Thill" }
+]
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+keywords = ["onnx", "tensorrt", "quantization"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = []  # Add Python dependencies required for your project
+
+[project.urls]
+Homepage = "https://github.com/MarkusThill/techdays25"
+Issues = "https://github.com/MarkusThill/techdays25/issues"
+
+[project.optional-dependencies]
+# Specify optional dependency groups
+dev = [
+    "commitizen", # Required for versioning
+    "pre-commit", # For managing Git hooks (optional)
+    "build",
+    "twine",
+    "readme_renderer[md]",
+    "keyrings.alt",
+    "pre-commit",
+    "matplotlib",
+    "ipywidgets",
+    "ruff", # For linting
+    "mkdocs",
+    "mkdocs-material",
+    "pytest"
+]
+
+[build-system]
+requires = ["build", "setuptools>=42", "wheel", "scikit-build"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true  # Include additional non-Python files (e.g., libraries)
+
+[tool.setuptools.package-data]
+"techdays25" = ["assets/*"]
+
+
+[tool.setuptools.packages.find]
+where = ["src"]  # list of folders that contain the packages (["."] by default)
+include = ["techdays25*"]  # package names should match these glob patterns (["*"] by default)
+exclude = ["techdays25.tests*"]  # exclude packages matching these glob patterns (empty by default)
+namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
+
+
+
+[tool.ruff]
+extend-include = ["*.ipynb"]
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+
+preview = true
+
+# https://jsh9.github.io/pydoclint/how_to_ignore.html
+external = [
+    "DOC",  # pydoclint
+]
+
+# See rules: https://beta.ruff.rs/docs/rules/
+select = [
+    "A",    # flake8-builtins
+    "C",    # flake8-comprehensions
+    "E",    # pycodestyle errors
+    "D",    # pydocstyle
+    "DOC",  # pydoclint
+    "F",    # pyflakes
+    "FURB", # refurb
+    "I",    # isort
+    "N",    # pep8-naming
+    "NPY",  # numpy
+    "PIE",  # misc lints
+    "PT",   # pytest
+    "PTH",  # flake8-use-pathlib
+    "PGH",  # pygrep
+    "RET",  # return
+    "RUF",  # ruff-specific rules
+    "T20",  # flake8 print
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "W",    # pycodestyle warnings
+]
+
+
+ignore = [
+    "DOC202", # allow empty return e.g., abstract classes/types
+    "E501",  # line too long, handled by black
+    "N806",  # variable name should be lowercase
+    "C901",  # too complex
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["techdays25"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["D104"] # disable missing docstrings in __init__
+"notebooks/*" = ["T"] # enable printing for notebooks
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+preview = true
+docstring-code-format = true
+docstring-code-line-length = 88
