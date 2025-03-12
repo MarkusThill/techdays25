@@ -42,6 +42,11 @@ dev = [
     "pytest"
 ]
 
+lab1 = [
+    "pandas",
+    "numpy"
+]
+
 [build-system]
 requires = ["build", "setuptools>=42", "wheel", "scikit-build"]
 build-backend = "setuptools.build_meta"
