@@ -1,5 +1,5 @@
 # techdays25 (Heavily under Construction 🚧👷‍♀️👷‍♂️)
-A collection of Jupyter Notebooks and Code Snippets for the Atruvia Tech Days 2025
+A collection of Jupyter Notebooks and Code Snippets for the Atruvia Tech Days 2025.
 
 
 ## Breaking AI Bottlenecks: The Art of Neural Network Inference Optimization
