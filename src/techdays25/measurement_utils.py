@@ -1,7 +1,10 @@
 """A module to generate some synthetic data for various examples."""
 
+from collections.abc import Sequence
+
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 
 
 def generate_measurement_data(
@@ -59,3 +62,62 @@ def generate_measurement_data(
         "voltage [V]": voltages,
         "current [mA]": currents * 1000.0,
     })
+
+
+def plot_measurement_data(
+    xx: Sequence[float],
+    yy: Sequence[float],
+    yy_pred: Sequence[float] | None = None,
+    xx_pred: Sequence[float] | None = None,
+    xlabel: str = "$U \\ [V]$",
+    ylabel: str = "$I \\ [mA]$",
+    title: str | None = None,
+) -> None:
+    r"""Plots measurement data and optionally model predictions.
+
+    Args:
+        xx (Sequence[float]): The x-axis data points (e.g., voltage measurements).
+        yy (Sequence[float]): The y-axis data points (e.g., current measurements).
+        yy_pred (Sequence[float] | None, optional): The predicted y-axis data points (e.g., model output). Defaults to None.
+        xx_pred (Sequence[float] | None, optional): The data used to predict `yy_pred`. Can be ignored, if it is th same as `xx`. Defaults to None.
+        xlabel (str, optional): The label for the x-axis. Defaults to "$U \\ [V]$".
+        ylabel (str, optional): The label for the y-axis. Defaults to "$I \\ [mA]$".
+        title (str | None, optional): The title of the plot.
+
+    Returns:
+        None
+    """
+    fig, ax = plt.subplots(figsize=(10, 6))
+    fig.canvas.toolbar_visible = False
+    fig.canvas.resizable = False
+    fig.canvas.toolbar_visible = False
+    fig.canvas.header_visible = False
+    fig.canvas.footer_visible = False
+    fig.canvas.capture_scroll = False
+
+    ax.scatter(xx, yy, label="measured data")
+
+    if yy_pred is not None:
+        xx_pred = xx if xx_pred is None else xx_pred
+        # It is sufficient to use only both ends of the line:
+        ax.plot(
+            [min(xx_pred), max(xx_pred)],
+            [min(yy_pred), max(yy_pred)],
+            color="red",
+            label="model output",
+        )
+        ax.scatter(xx_pred, yy_pred, color="red", label="model output", marker="x")
+
+    ax.minorticks_on()
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_ylim(0, None)
+    ax.set_xlim(None, None)
+
+    if title:
+        ax.set_title(title)
+
+    ax.grid(True, which="both")
+
+    ax.legend()
+    plt.show()

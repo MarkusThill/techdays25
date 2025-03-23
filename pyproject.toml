@@ -45,7 +45,14 @@ dev = [
 lab1 = [
     "pandas",
     "numpy",
-    "matplotlib"
+    "matplotlib",
+    "ipywidgets",
+    "ipympl",
+    "onnx",
+    "onnxruntime",
+    "sympy",
+    "scikit-learn",
+    "skl2onnx",
 ]
 
 [build-system]
