@@ -67,7 +67,7 @@ def generate_measurement_data(
 def plot_measurement_data(
     xx: Sequence[float],
     yy: Sequence[float],
-    yy_pred: Sequence[float] | None = None,
+    yy_pred: Sequence[float] | dict[str, Sequence[float]] | None = None,
     xx_pred: Sequence[float] | None = None,
     xlabel: str = "$U \\ [V]$",
     ylabel: str = "$I \\ [mA]$",
@@ -98,15 +98,22 @@ def plot_measurement_data(
     ax.scatter(xx, yy, label="measured data")
 
     if yy_pred is not None:
+        colors = list(plt.rcParams["axes.prop_cycle"].by_key()["color"])
         xx_pred = xx if xx_pred is None else xx_pred
-        # It is sufficient to use only both ends of the line:
-        ax.plot(
-            [min(xx_pred), max(xx_pred)],
-            [min(yy_pred), max(yy_pred)],
-            color="red",
-            label="model output",
-        )
-        ax.scatter(xx_pred, yy_pred, color="red", label="model output", marker="x")
+        if not isinstance(yy_pred, dict):
+            yy_pred = {"model": yy_pred}
+
+        for idx, (model_name, yy_model) in enumerate(yy_pred.items()):
+            # It is sufficient to use only both ends of the line:
+            ax.plot(
+                [min(xx_pred), max(xx_pred)],
+                [min(yy_model), max(yy_model)],
+                color=colors[-idx - 1],
+                label=model_name,
+            )
+            ax.scatter(
+                xx_pred, yy_model, color=colors[-idx - 1], label=None, marker="x"
+            )
 
     ax.minorticks_on()
     ax.set_xlabel(xlabel)
@@ -121,3 +128,16 @@ def plot_measurement_data(
 
     ax.legend()
     plt.show()
+
+
+def sse(xx: np.ndarray, yy: np.ndarray):
+    """Calculate the Sum of Squared Errors (SSE) between two NumPy arrays.
+
+    Args:
+        xx (np.ndarray): The first input array.
+        yy (np.ndarray): The second input array.
+
+    Returns:
+        float: The sum of squared errors between the versions of the input arrays.
+    """
+    return float(((xx - yy) ** 2).sum())
