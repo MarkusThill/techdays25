@@ -130,6 +130,14 @@ class DtmfGenerator:
         """
         return len(DtmfGenerator.FREQS)
 
+    def get_sample_rate(self) -> int:
+        """Returns the specified sample rate in Hz for the audio signal generation.
+
+        Returns:
+            int: The sample rate in Hz, e.g., 44100
+        """
+        return self.sample_rate
+
     @staticmethod
     def get_key(key_idx: int | tuple[int, int] | np.ndarray) -> str:
         """Get the key from the key matrix based on the index.
@@ -195,6 +203,54 @@ class DtmfGenerator:
         return DtmfGenerator.fftnoise(ff)
         # A = 10 #np.iinfo(np.int32).max * 10
         # return A * nn
+
+    @staticmethod
+    def run_length_encoding(
+        arr: np.ndarray, min_run_length: int = 1
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Perform run-length encoding on a numpy array.
+
+        This function compresses the input array by encoding consecutive
+        runs of the same value. It can also filter out runs shorter than
+        a specified minimum length and then merge neighboring runs with the
+        same value.
+
+        Args:
+            arr (np.ndarray): The input array to be encoded.
+            min_run_length (int, optional): The minimum length of runs to be kept. Defaults to 1.
+
+        Returns:
+            tuple[np.ndarray, np.ndarray]: Two numpy arrays, one containing the values of the runs
+            and the other containing the lengths of the runs.
+        """
+        if len(arr) == 0:
+            return np.array([]), np.array([])
+
+        # Step 1: Basic run-length encoding
+        change_indices = np.where(np.diff(arr) != 0)[0] + 1
+        run_starts = np.insert(change_indices, 0, 0)
+        run_lengths = np.diff(np.append(run_starts, len(arr)))
+        run_values = arr[run_starts]
+
+        # Step 2: Remove short runs
+        mask = run_lengths >= min_run_length
+        filtered_values = run_values[mask]
+        filtered_lengths = run_lengths[mask]
+
+        # Step 3: Merge neighboring runs with same value
+        merged_values = []
+        merged_lengths = []
+
+        for i in range(len(filtered_values)):
+            if merged_values and filtered_values[i] == merged_values[-1]:
+                # Merge with previous run
+                merged_lengths[-1] += filtered_lengths[i]
+            else:
+                # Start a new run
+                merged_values.append(filtered_values[i])
+                merged_lengths.append(filtered_lengths[i])
+
+        return np.array(merged_values), np.array(merged_lengths)
 
     def get_key_tone(
         self, key: str, dur: float = 0.4
@@ -407,3 +463,33 @@ class DtmfGenerator:
             Y.append(np.concatenate(yy)[:t_length])
 
         return np.array(X), np.array(Y)
+
+    def decode_prediction(self, prediction: np.ndarray) -> str:
+        """Decode the model's prediction into a sequence of DTMF keys.
+
+        This method takes the model's prediction, which is an array of shape (T, 17) or (1, T, 17),
+        and decodes it into a sequence of DTMF keys. It applies run-length encoding to filter out
+        short breaks and invalid key signals, then maps the remaining indexes to the corresponding keys.
+
+        Args:
+        prediction (np.ndarray): The model's prediction array. It should have shape (T, 17) or (1, T, 17),
+            where T is the number of time steps and 17 is the number of possible classes (16 keys + 1 for pause).
+
+        Returns:
+        str: The decoded sequence of DTMF keys.
+        """
+        # a prediction of shape (T, 17) or (1, T, 17)
+        predicted_indexes = prediction.squeeze().argmax(axis=-1)
+
+        # According to the standard, breaks shorter than 10 ms should be discarded
+        # Also, key signals shorter than 23ms are invalid (for now, we ignore this rule
+        # and only discard those, which are shorter than 10 ms).
+        min_run_length = int(self.sample_rate * 0.01)
+        rle_values, _ = DtmfGenerator.run_length_encoding(
+            predicted_indexes, min_run_length=min_run_length
+        )
+
+        # Remove the pauses and map indexes to keys:
+        return "".join(
+            DtmfGenerator.get_key(rle_values[rle_values < DtmfGenerator.get_num_keys()])
+        )
