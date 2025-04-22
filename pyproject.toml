@@ -51,9 +51,19 @@ lab1 = [
     "netron",
     "onnx",
     "onnxruntime",
+    "onnxscript",
     "sympy",
     "scikit-learn",
     "skl2onnx",
+    "tf2onnx"
+]
+
+lab2 = [
+    "netron",
+    "onnx",
+    "onnxconverter-common",
+    "onnxruntime-gpu",
+    "tf2onnx"
 ]
 
 [build-system]
