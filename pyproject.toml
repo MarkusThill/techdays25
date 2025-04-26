@@ -61,9 +61,11 @@ lab1 = [
 lab2 = [
     "netron",
     "onnx",
+    "onnxruntime-tools",
     "onnxconverter-common",
     "onnxruntime-gpu",
-    "tf2onnx"
+    "tf2onnx",
+    "tensorrt"
 ]
 
 [build-system]
