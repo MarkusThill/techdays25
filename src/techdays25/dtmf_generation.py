@@ -465,7 +465,7 @@ class DtmfGenerator:
             if with_labels:
                 Y.append(np.concatenate(yy)[:t_length])
 
-        return np.array(X), np.array(Y) if with_labels else np.array(X)
+        return (np.array(X), np.array(Y)) if with_labels else np.array(X)
 
     def decode_prediction(self, prediction: np.ndarray) -> str:
         """Decode the model's prediction into a sequence of DTMF keys.
