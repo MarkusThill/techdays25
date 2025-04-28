@@ -447,7 +447,7 @@ class DtmfGenerator:
             xx, yy = [], []
             while current_length < t_length:
                 seq = "".join(rng.choice(DtmfGenerator.key_matrix.flatten(), size=5))
-                x, y = self.get_tone_sequence(
+                xy = self.get_tone_sequence(
                     seq,
                     dur_key=dur_key,
                     dur_pause=dur_pause,
@@ -455,6 +455,8 @@ class DtmfGenerator:
                     noise_factor=noise_factor,
                     noise_freq_range=noise_freq_range,
                 )
+                x, y = xy if isinstance(xy, tuple) else (xy, None)
+
                 xx.append(x[..., np.newaxis])
                 yy.append(y)
                 current_length += len(x)
@@ -462,7 +464,7 @@ class DtmfGenerator:
             X.append(np.concatenate(xx)[:t_length])
             Y.append(np.concatenate(yy)[:t_length])
 
-        return np.array(X), np.array(Y)
+        return np.array(X), np.array(Y) if with_labels else np.array(X)
 
     def decode_prediction(self, prediction: np.ndarray) -> str:
         """Decode the model's prediction into a sequence of DTMF keys.
