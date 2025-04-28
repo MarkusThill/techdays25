@@ -462,7 +462,8 @@ class DtmfGenerator:
                 current_length += len(x)
 
             X.append(np.concatenate(xx)[:t_length])
-            Y.append(np.concatenate(yy)[:t_length])
+            if with_labels:
+                Y.append(np.concatenate(yy)[:t_length])
 
         return np.array(X), np.array(Y) if with_labels else np.array(X)
 
