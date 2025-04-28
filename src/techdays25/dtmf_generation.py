@@ -411,7 +411,7 @@ class DtmfGenerator:
         dur_pause: float | tuple[float, float] | None = None,
         noise_factor: float | tuple[float, float] | None = None,
         noise_freq_range: tuple[float, float] | None = None,
-        with_labels: Literal["freqz", "keys"] = "keys",
+        with_labels: Literal["freqz", "keys"] | False | None = "keys",
     ) -> tuple[np.ndarray, np.ndarray]:
         """Generate a dataset of DTMF tone sequences for classification.
 
@@ -432,12 +432,12 @@ class DtmfGenerator:
                 will be randomly chosen. Defaults to None, which uses the instance's `noise_factor`.
             noise_freq_range (tuple[float, float] | None, optional): The frequency range for the noise.
                 This specifies the minimum and maximum frequencies of the noise. Defaults to None, which uses the instance's `noise_freq_range`.
-            with_labels (Literal["freqz", "keys"], optional): Whether to include labels and their type.
+            with_labels (Literal["freqz", "keys"] | False | None, optional): Whether to include labels and their type.
                 If "freqz" is provided, labels will indicate the presence of specific frequencies.
                 If "keys" is provided, labels will indicate the presence of specific keys. Defaults to "keys".
 
         Returns:
-            tuple[np.ndarray, np.ndarray]: Two numpy arrays, one containing the generated sequences (X)
+            np.ndarray | tuple[np.ndarray, np.ndarray]: The numpy array containing the generated sequences (X) (signals) if `with_labels` is `None` or `False`. Otherwise, Two numpy arrays, one containing the generated sequences (X)
             and the other containing the corresponding labels (Y).
         """
         X, Y = [], []
