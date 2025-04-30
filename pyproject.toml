@@ -64,6 +64,7 @@ lab2 = [
     "onnxruntime-tools",
     "onnxconverter-common",
     "onnxruntime-gpu",
+    "onnx-simplifier",
     "tf2onnx",
     "tensorrt"
 ]
