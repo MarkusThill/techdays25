@@ -165,7 +165,7 @@ def measure_latency_(
         _ = f_predict(input_tensor)
 
     timings = []
-    modd = min(1, n_runs // 100)
+    modd = max(1, n_runs // 100)
     for r_idx in range(n_runs):
         input_tensor = rng.uniform(low=-1, high=1, size=tensor_shape).astype(np.float32)
         start = time.perf_counter()
