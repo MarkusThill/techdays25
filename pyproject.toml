@@ -65,6 +65,7 @@ lab2 = [
     "onnxconverter-common",
     "onnxruntime-gpu",
     "onnx-simplifier",
+    "python-Levenshtein",
     "tf2onnx",
     "tensorrt"
 ]
