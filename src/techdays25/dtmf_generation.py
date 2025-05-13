@@ -493,6 +493,11 @@ class DtmfGenerator:
         )
 
         # Remove the pauses and map indexes to keys:
-        return "".join(
-            DtmfGenerator.get_key(rle_values[rle_values < DtmfGenerator.get_num_keys()])
+        which_rle_values = (
+            rle_values < DtmfGenerator.get_num_keys() if rle_values.any() else None
+        )
+        return (
+            "".join(DtmfGenerator.get_key(rle_values[which_rle_values]))
+            if which_rle_values is not None
+            else ""
         )
