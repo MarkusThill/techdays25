@@ -49,13 +49,13 @@ lab1 = [
     "ipywidgets",
     "ipympl",
     "netron",
-    "onnx",
+    "onnx==1.17.0",
     "onnxruntime",
     "onnxscript",
     "sympy",
     "scikit-learn",
     "skl2onnx",
-    "tf2onnx"
+    "tf2onnx>=1.16.1",
 ]
 
 lab2 = [
