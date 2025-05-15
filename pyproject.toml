@@ -67,7 +67,7 @@ lab2 = [
     "onnx-simplifier",
     "python-Levenshtein",
     "tf2onnx>=1.16.1",
-    "tensorrt"
+    "tensorrt==10.10.0.31"
 ]
 
 [build-system]
