@@ -10,6 +10,18 @@ from matplotlib.ticker import ScalarFormatter
 
 
 def plot_speedup(df, reference_model: str, batch_size: int):
+    """Plot the speedup of each model relative to a reference model for a given batch size.
+
+    Args:
+        df (pd.DataFrame): A DataFrame whose index contains batch sizes and whose columns
+            contain per-model runtimes.
+        reference_model (str): The name of the column to use as the speedup baseline.
+        batch_size (int): The batch size (row in ``df``) to plot.
+
+    Raises:
+        ValueError: If ``batch_size`` is not in ``df.index`` or ``reference_model``
+            is not in ``df.columns``.
+    """
     # Ensure the batch size exists in the DataFrame
     if batch_size not in df.index:
         raise ValueError(f"Batch size {batch_size} not found in the DataFrame index.")
@@ -48,8 +60,8 @@ def plot_speedup(df, reference_model: str, batch_size: int):
             va="bottom",
         )
 
-    plt.title(f'Speedup relativ zu "{reference_model}" für Batch-Größe {batch_size}')
-    plt.xlabel("Modell")
+    plt.title(f'Speedup relative to "{reference_model}" for batch size {batch_size}')
+    plt.xlabel("Model")
     plt.ylabel("Speedup")
     plt.xticks(rotation=45)
     plt.grid(axis="y", which="both")
@@ -106,8 +118,8 @@ def plot_benchmark_results(
         )
 
     # Make it pretty
-    plt.xlabel("Batch-Größe")
-    plt.ylabel("Latenz [s]")
+    plt.xlabel("Batch size")
+    plt.ylabel("Latency [s]")
     plt.title(title)
     plt.tight_layout()
     plt.legend()
